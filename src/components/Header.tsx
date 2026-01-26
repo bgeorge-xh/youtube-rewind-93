@@ -10,15 +10,15 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto px-4 py-2">
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-foreground">You</span>
+              <span className="text-2xl font-bold text-foreground">View</span>
               <span className="bg-primary text-primary-foreground text-2xl font-bold px-1.5 py-0.5 rounded-sm">
-                Tube
+                Port
               </span>
             </div>
             <span className="text-xs text-muted-foreground italic mt-1 hidden sm:block">
-              Broadcast Yourself™
+              Your Videos, Your Way™
             </span>
           </div>
 

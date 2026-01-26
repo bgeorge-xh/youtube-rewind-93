@@ -42,7 +42,7 @@ export const StarRating = ({
             <Star
               key={index}
               className={`${sizeClasses[size]} ${
-                isFilled || isHalf ? "star-filled fill-youtube-star" : "star-empty"
+                isFilled || isHalf ? "star-filled fill-current" : "star-empty"
               } ${interactive ? "cursor-pointer hover:scale-110" : ""}`}
               onClick={() => handleClick(index)}
             />

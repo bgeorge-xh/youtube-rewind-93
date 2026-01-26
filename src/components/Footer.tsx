@@ -17,18 +17,18 @@ export const Footer = () => {
             <a href="#" className="hover:text-foreground transition-colors">Terms</a>
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
             <a href="#" className="hover:text-foreground transition-colors">Policy & Safety</a>
-            <a href="#" className="hover:text-foreground transition-colors">How YouTube works</a>
+            <a href="#" className="hover:text-foreground transition-colors">How ViewPort works</a>
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-foreground">You</span>
+            <span className="text-2xl font-bold text-foreground">View</span>
             <span className="bg-primary text-primary-foreground text-2xl font-bold px-1.5 py-0.5 rounded-sm">
-              Tube
+              Port
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © 2007-2012 YouTube, LLC
+            © 2024 ViewPort. Your Videos, Your Way.
           </p>
         </div>
       </div>
