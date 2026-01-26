@@ -6,106 +6,108 @@
 
 @layer base {
   :root {
-    /* Classic YouTube Red Era */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 13%;
+    /* ViewPort Navy Blue Identity */
+    --background: 210 20% 98%;
+    --foreground: 220 30% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 220 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 220 30% 15%;
 
-    /* Classic YouTube Red */
-    --primary: 0 100% 40%;
+    /* ViewPort Navy Blue */
+    --primary: 220 70% 35%;
     --primary-foreground: 0 0% 100%;
 
-    /* Soft gray for secondary elements */
-    --secondary: 0 0% 94%;
-    --secondary-foreground: 0 0% 20%;
+    /* Soft blue-gray for secondary */
+    --secondary: 210 15% 94%;
+    --secondary-foreground: 220 30% 20%;
 
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 15% 92%;
+    --muted-foreground: 220 10% 45%;
 
-    /* Classic link blue */
-    --accent: 210 100% 40%;
+    /* Accent teal for links */
+    --accent: 195 80% 40%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
-    --ring: 0 100% 40%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 220 70% 35%;
 
-    --radius: 0.25rem;
+    --radius: 0.5rem;
 
-    /* Custom YouTube tokens */
-    --youtube-red: 0 100% 40%;
-    --youtube-red-hover: 0 100% 35%;
-    --youtube-dark: 0 0% 13%;
-    --youtube-gray: 0 0% 60%;
-    --youtube-light-gray: 0 0% 96%;
-    --youtube-link: 210 100% 40%;
-    --youtube-star: 45 100% 51%;
-    --youtube-star-empty: 0 0% 75%;
+    /* ViewPort custom tokens */
+    --viewport-navy: 220 70% 35%;
+    --viewport-navy-hover: 220 70% 28%;
+    --viewport-navy-light: 220 60% 50%;
+    --viewport-dark: 220 30% 15%;
+    --viewport-gray: 220 10% 55%;
+    --viewport-light-gray: 210 20% 96%;
+    --viewport-link: 195 80% 40%;
+    --viewport-star: 45 100% 51%;
+    --viewport-star-empty: 220 10% 75%;
 
     /* Gradients */
-    --gradient-header: linear-gradient(180deg, hsl(0 0% 95%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-card-hover: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+    --gradient-header: linear-gradient(180deg, hsl(210 20% 96%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-card-hover: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-navy: linear-gradient(135deg, hsl(220 70% 35%) 0%, hsl(220 60% 45%) 100%);
 
     /* Shadows */
-    --shadow-card: 0 1px 3px hsl(0 0% 0% / 0.1);
-    --shadow-card-hover: 0 4px 12px hsl(0 0% 0% / 0.15);
-    --shadow-header: 0 1px 0 hsl(0 0% 85%);
+    --shadow-card: 0 1px 3px hsl(220 30% 15% / 0.08);
+    --shadow-card-hover: 0 4px 12px hsl(220 30% 15% / 0.12);
+    --shadow-header: 0 1px 0 hsl(210 20% 85%);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 20%;
-    --sidebar-primary: 0 100% 40%;
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 220 30% 20%;
+    --sidebar-primary: 220 70% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 94%;
-    --sidebar-accent-foreground: 0 0% 20%;
-    --sidebar-border: 0 0% 88%;
-    --sidebar-ring: 0 100% 40%;
+    --sidebar-accent: 210 15% 94%;
+    --sidebar-accent-foreground: 220 30% 20%;
+    --sidebar-border: 210 20% 88%;
+    --sidebar-ring: 220 70% 35%;
   }
 
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 95%;
+    --background: 220 25% 8%;
+    --foreground: 210 20% 95%;
 
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 220 25% 11%;
+    --card-foreground: 210 20% 95%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 220 25% 11%;
+    --popover-foreground: 210 20% 95%;
 
-    --primary: 0 100% 50%;
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 210 20% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 220 20% 18%;
+    --muted-foreground: 220 15% 60%;
 
-    --accent: 210 100% 60%;
+    --accent: 195 80% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive-foreground: 210 20% 95%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 100% 50%;
-
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 0 100% 50%;
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 220 70% 50%;
+    
+    --sidebar-background: 220 25% 11%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 220 70% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 100% 50%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 20% 20%;
+    --sidebar-ring: 220 70% 50%;
   }
 }
 
@@ -121,12 +123,12 @@
 }
 
 @layer components {
-  .youtube-link {
+  .viewport-link {
     @apply text-accent hover:underline cursor-pointer transition-colors;
   }
 
   .video-card {
-    @apply bg-card rounded transition-all duration-200 cursor-pointer;
+    @apply bg-card rounded-lg transition-all duration-200 cursor-pointer;
     box-shadow: var(--shadow-card);
   }
 
@@ -144,11 +146,11 @@
   }
 
   .star-filled {
-    color: hsl(var(--youtube-star));
+    color: hsl(var(--viewport-star));
   }
 
   .star-empty {
-    color: hsl(var(--youtube-star-empty));
+    color: hsl(var(--viewport-star-empty));
   }
 
   .category-link {
@@ -160,33 +162,33 @@
   }
 
   .classic-button {
-    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded border transition-all duration-150;
+    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md border transition-all duration-150;
     @apply bg-gradient-to-b from-secondary to-muted border-border text-foreground;
     @apply hover:from-muted hover:to-secondary active:from-muted/80;
   }
 
   .subscribe-button {
-    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-bold rounded transition-all duration-150;
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-bold rounded-md transition-all duration-150;
     @apply bg-primary text-primary-foreground;
     @apply hover:bg-primary/90 active:bg-primary/80;
   }
 }
 
 @layer utilities {
-  .text-youtube-red {
-    color: hsl(var(--youtube-red));
+  .text-viewport-navy {
+    color: hsl(var(--viewport-navy));
   }
 
-  .bg-youtube-red {
-    background-color: hsl(var(--youtube-red));
+  .bg-viewport-navy {
+    background-color: hsl(var(--viewport-navy));
   }
 
-  .text-youtube-link {
-    color: hsl(var(--youtube-link));
+  .text-viewport-link {
+    color: hsl(var(--viewport-link));
   }
 
-  .text-youtube-gray {
-    color: hsl(var(--youtube-gray));
+  .text-viewport-gray {
+    color: hsl(var(--viewport-gray));
   }
 
   .animate-fade-up {
