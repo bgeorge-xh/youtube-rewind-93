@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { StarRating } from "./StarRating";
 
 interface VideoCardProps {
@@ -14,6 +15,7 @@ interface VideoCardProps {
 }
 
 export const VideoCard = ({
+  id,
   title,
   thumbnail,
   channel,
@@ -22,7 +24,6 @@ export const VideoCard = ({
   duration,
   rating,
   ratingCount,
-  onClick,
 }: VideoCardProps) => {
   const formatViews = (num: number): string => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -31,7 +32,7 @@ export const VideoCard = ({
   };
 
   return (
-    <div className="video-card group" onClick={onClick}>
+    <Link to={`/watch/${id}`} className="video-card group block">
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-t bg-muted">
         <img
@@ -60,6 +61,6 @@ export const VideoCard = ({
         </div>
         <StarRating rating={rating} showCount count={ratingCount} />
       </div>
-    </div>
+    </Link>
   );
 };
