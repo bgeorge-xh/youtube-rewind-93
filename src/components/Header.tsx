@@ -1,8 +1,23 @@
 import { Search, Upload, User } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
+
+  const navTabs = [
+    { label: "Home", path: "/" },
+    { label: "Videos", path: "/videos" },
+    { label: "PortWiki", path: "/wiki" },
+    { label: "PortNews", path: "/news" },
+    { label: "Community", path: "/community" },
+  ];
+
+  const isActive = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-card border-b border-border shadow-header">
@@ -56,17 +71,18 @@ export const Header = () => {
       <nav className="bg-secondary/50 border-t border-border">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex gap-1 overflow-x-auto">
-            {["Home", "Videos", "Channels", "Community"].map((tab, index) => (
-              <button
-                key={tab}
+            {navTabs.map((tab) => (
+              <Link
+                key={tab.path}
+                to={tab.path}
                 className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
-                  index === 0
+                  isActive(tab.path)
                     ? "text-primary border-b-2 border-primary"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {tab}
-              </button>
+                {tab.label}
+              </Link>
             ))}
           </div>
         </div>
