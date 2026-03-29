@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -11,7 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Video, Calendar, Eye, Play } from "lucide-react";
+import { Users, Video, Calendar, Eye, Play, Camera, ImagePlus } from "lucide-react";
 
 const formatViews = (views: number) => {
   if (views >= 1e9) return `${(views / 1e9).toFixed(1)}B`;
@@ -24,9 +24,13 @@ const Channel = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
-  // If "me", fetch the current user's channel
   const { data: channel, isLoading } = useQuery({
     queryKey: ["channel", id, user?.id],
     queryFn: async () => {
@@ -78,6 +82,66 @@ const Channel = () => {
     });
   };
 
+  const uploadImage = async (
+    file: File,
+    bucket: string,
+    field: "avatar_url" | "banner_url",
+    table: "channels" | "profiles"
+  ) => {
+    if (!user || !channel) return;
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/${Date.now()}.${ext}`;
+
+    const { error: uploadErr } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+    if (uploadErr) throw uploadErr;
+
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(path);
+
+    if (table === "channels") {
+      const { error } = await supabase.from("channels").update({ [field]: urlData.publicUrl }).eq("id", channel.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from("profiles").update({ [field]: urlData.publicUrl }).eq("user_id", user.id);
+      if (error) throw error;
+    }
+
+    return urlData.publicUrl;
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      await uploadImage(file, "avatars", "avatar_url", "channels");
+      // Also update profile avatar
+      await uploadImage(file, "avatars", "avatar_url", "profiles");
+      queryClient.invalidateQueries({ queryKey: ["channel"] });
+      toast({ title: "Avatar updated!" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  };
+
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingBanner(true);
+    try {
+      await uploadImage(file, "channel-banners", "banner_url", "channels");
+      queryClient.invalidateQueries({ queryKey: ["channel"] });
+      toast({ title: "Banner updated!" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUploadingBanner(false);
+      if (bannerInputRef.current) bannerInputRef.current.value = "";
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -113,22 +177,50 @@ const Channel = () => {
 
       <main className="flex-1">
         {/* Banner */}
-        <div className="relative h-48 md:h-64 bg-gradient-to-r from-primary to-primary/70 overflow-hidden">
+        <div className="relative h-48 md:h-64 bg-gradient-to-r from-primary to-primary/70 overflow-hidden group">
           {channel.banner_url && (
-            <img src={channel.banner_url} alt="Channel banner" className="w-full h-full object-cover opacity-50" />
+            <img src={channel.banner_url} alt="Channel banner" className="w-full h-full object-cover opacity-80" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+          {isOwner && (
+            <>
+              <input ref={bannerInputRef} type="file" accept="image/*" className="hidden" onChange={handleBannerUpload} />
+              <button
+                onClick={() => bannerInputRef.current?.click()}
+                disabled={uploadingBanner}
+                className="absolute top-4 right-4 bg-background/80 hover:bg-background text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <ImagePlus className="w-4 h-4" />
+                {uploadingBanner ? "Uploading..." : "Change Banner"}
+              </button>
+            </>
+          )}
         </div>
 
         {/* Channel Info */}
         <div className="max-w-7xl mx-auto w-full px-4">
           <div className="relative -mt-16 mb-6">
             <div className="flex flex-col md:flex-row md:items-end gap-4">
-              <div className="w-32 h-32 rounded-full border-4 border-background shadow-lg bg-muted flex items-center justify-center overflow-hidden">
-                {channel.avatar_url ? (
-                  <img src={channel.avatar_url} alt={channel.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-4xl font-bold text-muted-foreground">{channel.name[0]}</span>
+              {/* Avatar with upload */}
+              <div className="relative group/avatar">
+                <div className="w-32 h-32 rounded-full border-4 border-background shadow-lg bg-muted flex items-center justify-center overflow-hidden">
+                  {channel.avatar_url ? (
+                    <img src={channel.avatar_url} alt={channel.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-4xl font-bold text-muted-foreground">{channel.name[0]}</span>
+                  )}
+                </div>
+                {isOwner && (
+                  <>
+                    <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+                    <button
+                      onClick={() => avatarInputRef.current?.click()}
+                      disabled={uploadingAvatar}
+                      className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity"
+                    >
+                      <Camera className="w-6 h-6 text-white" />
+                    </button>
+                  </>
                 )}
               </div>
 
