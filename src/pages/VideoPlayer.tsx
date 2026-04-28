@@ -191,11 +191,28 @@ const VideoPlayer = () => {
           <div className="flex-1">
             {/* Video player area */}
             <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
-              <img
-                src={video.thumbnail_url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&h=450&fit=crop"}
-                alt={video.title}
-                className="w-full h-full object-cover"
-              />
+              {youtubeId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0`}
+                  title={video.title}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : video.video_url ? (
+                <video
+                  src={video.video_url}
+                  poster={video.thumbnail_url || undefined}
+                  controls
+                  className="w-full h-full object-contain bg-black"
+                />
+              ) : (
+                <img
+                  src={video.thumbnail_url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&h=450&fit=crop"}
+                  alt={video.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
 
             {/* Video info */}
