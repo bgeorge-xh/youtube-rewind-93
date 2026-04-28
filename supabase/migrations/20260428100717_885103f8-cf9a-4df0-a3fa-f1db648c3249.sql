@@ -1,0 +1,1 @@
+ALTER TABLE public.channels DROP CONSTRAINT IF EXISTS channels_user_id_key;
