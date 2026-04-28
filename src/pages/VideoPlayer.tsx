@@ -169,6 +169,19 @@ const VideoPlayer = () => {
 
   const channel = video.channels as any;
 
+  const getYoutubeId = (url?: string | null): string | null => {
+    if (!url) return null;
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
+    ];
+    for (const re of patterns) {
+      const m = url.match(re);
+      if (m) return m[1];
+    }
+    return null;
+  };
+  const youtubeId = getYoutubeId(video.video_url);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
