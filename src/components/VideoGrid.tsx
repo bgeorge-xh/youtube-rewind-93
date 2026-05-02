@@ -1,30 +1,52 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { VideoCard } from "./VideoCard";
 import { Skeleton } from "./ui/skeleton";
+import { Badge } from "./ui/badge";
 
-const fetchVideos = async () => {
-  const { data, error } = await supabase
+const CATEGORIES = ["All", "Classic", "Meme", "YTP"];
+
+const fetchVideos = async (search: string, category: string) => {
+  let query = supabase
     .from("videos")
     .select("*, channels(name, avatar_url)")
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(30);
 
+  if (search) {
+    query = query.ilike("title", `%${search}%`);
+  }
+  if (category && category !== "All") {
+    query = query.eq("category", category);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 };
 
-export const VideoGrid = () => {
+interface VideoGridProps {
+  searchQuery?: string;
+}
+
+export const VideoGrid = ({ searchQuery = "" }: VideoGridProps) => {
+  const [category, setCategory] = useState("All");
+
   const { data: videos, isLoading } = useQuery({
-    queryKey: ["videos"],
-    queryFn: fetchVideos,
+    queryKey: ["videos", searchQuery, category],
+    queryFn: () => fetchVideos(searchQuery, category),
   });
+
+  const heading = searchQuery
+    ? `Results for "${searchQuery}"`
+    : "Videos Being Watched Right Now";
 
   if (isLoading) {
     return (
       <div className="flex-1">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-foreground">Videos Being Watched Right Now</h2>
+          <h2 className="text-lg font-bold text-foreground">{heading}</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -42,13 +64,29 @@ export const VideoGrid = () => {
   return (
     <div className="flex-1">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">Videos Being Watched Right Now</h2>
+        <h2 className="text-lg font-bold text-foreground">{heading}</h2>
+      </div>
+
+      {/* Category filters */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {CATEGORIES.map((cat) => (
+          <Badge
+            key={cat}
+            variant={category === cat ? "default" : "outline"}
+            className="cursor-pointer text-sm px-3 py-1 transition-colors"
+            onClick={() => setCategory(cat)}
+          >
+            {cat}
+          </Badge>
+        ))}
       </div>
 
       {!videos || videos.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <p className="text-lg font-medium mb-2">No videos yet</p>
-          <p className="text-sm">Be the first to upload a video!</p>
+          <p className="text-lg font-medium mb-2">No videos found</p>
+          <p className="text-sm">
+            {searchQuery ? "Try a different search term" : "Be the first to upload a video!"}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
