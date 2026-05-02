@@ -79,9 +79,10 @@ export const Header = () => {
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="flex-1 px-3 py-1.5 text-sm border border-border rounded-l bg-background focus:outline-none focus:ring-1 focus:ring-primary/50"
                 />
-                <button className="classic-button rounded-l-none border-l-0">
+                <button className="classic-button rounded-l-none border-l-0" onClick={handleSearch}>
                   <Search className="w-4 h-4" />
                 </button>
               </div>
