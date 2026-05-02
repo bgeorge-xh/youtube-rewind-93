@@ -18,8 +18,17 @@ export const Header = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/");
+    }
+  };
 
   const navTabs = [
     { label: "Home", path: "/" },
