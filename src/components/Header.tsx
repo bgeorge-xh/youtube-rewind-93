@@ -1,6 +1,6 @@
 import { Search, Upload, User, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthModal } from "@/components/AuthModal";
 import { UploadVideoModal } from "@/components/UploadVideoModal";
@@ -18,8 +18,17 @@ export const Header = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/");
+    }
+  };
 
   const navTabs = [
     { label: "Home", path: "/" },
@@ -70,9 +79,10 @@ export const Header = () => {
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="flex-1 px-3 py-1.5 text-sm border border-border rounded-l bg-background focus:outline-none focus:ring-1 focus:ring-primary/50"
                 />
-                <button className="classic-button rounded-l-none border-l-0">
+                <button className="classic-button rounded-l-none border-l-0" onClick={handleSearch}>
                   <Search className="w-4 h-4" />
                 </button>
               </div>
