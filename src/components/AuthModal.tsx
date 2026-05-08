@@ -29,7 +29,7 @@ export const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     if (error) {
       toast({
         title: "Sign in failed",
-        description: error.message,
+        description: "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     } else {
@@ -53,7 +53,7 @@ export const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     if (error) {
       toast({
         title: "Sign up failed",
-        description: error.message,
+        description: "Could not create account. Please check your details and try again.",
         variant: "destructive",
       });
     } else {

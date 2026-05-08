@@ -114,7 +114,7 @@ export const UploadVideoModal = ({ open, onOpenChange, onSuccess }: UploadVideoM
     } catch (err: any) {
       toast({
         title: "Upload failed",
-        description: err.message || "Something went wrong.",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {
