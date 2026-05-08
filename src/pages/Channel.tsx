@@ -119,7 +119,7 @@ const Channel = () => {
       queryClient.invalidateQueries({ queryKey: ["channel"] });
       toast({ title: "Avatar updated!" });
     } catch (err: any) {
-      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: "Could not upload avatar. Please try again.", variant: "destructive" });
     } finally {
       setUploadingAvatar(false);
       if (avatarInputRef.current) avatarInputRef.current.value = "";
@@ -135,7 +135,7 @@ const Channel = () => {
       queryClient.invalidateQueries({ queryKey: ["channel"] });
       toast({ title: "Banner updated!" });
     } catch (err: any) {
-      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: "Could not upload banner. Please try again.", variant: "destructive" });
     } finally {
       setUploadingBanner(false);
       if (bannerInputRef.current) bannerInputRef.current.value = "";

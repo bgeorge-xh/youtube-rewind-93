@@ -102,7 +102,7 @@ const VideoPlayer = () => {
     });
 
     if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: "Could not post your comment. Please try again.", variant: "destructive" });
     } else {
       toast({ title: "Comment posted!" });
       setComment("");
