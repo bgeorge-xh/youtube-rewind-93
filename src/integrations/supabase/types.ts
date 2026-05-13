@@ -92,6 +92,69 @@ export type Database = {
           },
         ]
       }
+      portcount_handles: {
+        Row: {
+          created_at: string
+          handle: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          handle: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          handle?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      portmail_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_deleted: boolean
+          recipient_handle: string
+          recipient_id: string | null
+          sender_deleted: boolean
+          sender_handle: string
+          sender_id: string
+          subject: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_deleted?: boolean
+          recipient_handle: string
+          recipient_id?: string | null
+          sender_deleted?: boolean
+          sender_handle: string
+          sender_id: string
+          subject?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_deleted?: boolean
+          recipient_handle?: string
+          recipient_id?: string | null
+          sender_deleted?: boolean
+          sender_handle?: string
+          sender_id?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
