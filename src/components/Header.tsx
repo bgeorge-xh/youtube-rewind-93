@@ -35,6 +35,7 @@ export const Header = () => {
     { label: "Videos", path: "/videos" },
     { label: "PortWiki", path: "/wiki" },
     { label: "PortNews", path: "/news" },
+    { label: "PortMail", path: "/portmail" },
     { label: "Community", path: "/community" },
   ];
 

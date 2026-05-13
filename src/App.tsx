@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import PortWiki from "./pages/PortWiki";
 import PortNews from "./pages/PortNews";
+import PortMail from "./pages/PortMail";
+import PortMailLanding from "./pages/PortMailLanding";
 import VideoPlayer from "./pages/VideoPlayer";
 import Channel from "./pages/Channel";
 import NotFound from "./pages/NotFound";
@@ -24,6 +26,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/wiki" element={<PortWiki />} />
             <Route path="/news" element={<PortNews />} />
+            <Route path="/portmail" element={<PortMailLanding />} />
+            <Route path="/mail" element={<PortMail />} />
             <Route path="/watch/:id" element={<VideoPlayer />} />
             <Route path="/channel/:id" element={<Channel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
