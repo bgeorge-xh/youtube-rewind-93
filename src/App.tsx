@@ -24,6 +24,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/videos" element={<Index />} />
+            <Route path="/community" element={<Index />} />
             <Route path="/wiki" element={<PortWiki />} />
             <Route path="/news" element={<PortNews />} />
             <Route path="/portmail" element={<PortMailLanding />} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,6 +87,39 @@ const VideoPlayer = () => {
     },
     enabled: !!id,
   });
+
+  // Check existing subscription
+  useEffect(() => {
+    const channelId = (video?.channels as any)?.id;
+    if (!user || !channelId) { setIsSubscribed(false); return; }
+    supabase.from("subscriptions").select("id")
+      .eq("subscriber_id", user.id).eq("channel_id", channelId).maybeSingle()
+      .then(({ data }) => setIsSubscribed(!!data));
+  }, [user, video]);
+
+  // Load existing user rating
+  useEffect(() => {
+    if (!user || !id) { setUserRating(0); return; }
+    supabase.from("ratings").select("rating")
+      .eq("user_id", user.id).eq("video_id", id).maybeSingle()
+      .then(({ data }) => setUserRating(data?.rating || 0));
+  }, [user, id]);
+
+  const handleSubscribe = async () => {
+    if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
+    const channelId = (video?.channels as any)?.id;
+    if (!channelId) return;
+    if (isSubscribed) {
+      await supabase.from("subscriptions").delete()
+        .eq("subscriber_id", user.id).eq("channel_id", channelId);
+      setIsSubscribed(false);
+      toast({ title: "Unsubscribed" });
+    } else {
+      await supabase.from("subscriptions").insert({ subscriber_id: user.id, channel_id: channelId });
+      setIsSubscribed(true);
+      toast({ title: "Subscribed!" });
+    }
+  };
 
   const handleComment = async () => {
     if (!user) {
@@ -276,10 +309,7 @@ const VideoPlayer = () => {
                   </div>
                 </Link>
                 <Button
-                  onClick={() => {
-                    if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-                    setIsSubscribed(!isSubscribed);
-                  }}
+                  onClick={handleSubscribe}
                   className={isSubscribed ? "bg-muted text-foreground hover:bg-muted/80" : ""}
                 >
                   {isSubscribed ? "Subscribed" : "Subscribe"}
