@@ -309,10 +309,7 @@ const VideoPlayer = () => {
                   </div>
                 </Link>
                 <Button
-                  onClick={() => {
-                    if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-                    setIsSubscribed(!isSubscribed);
-                  }}
+                  onClick={handleSubscribe}
                   className={isSubscribed ? "bg-muted text-foreground hover:bg-muted/80" : ""}
                 >
                   {isSubscribed ? "Subscribed" : "Subscribe"}
