@@ -302,7 +302,17 @@ const Channel = () => {
               </div>
 
               <div className="flex-1 pb-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground">{channel.name}</h1>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground">{channel.name}</h1>
+                  {isOwner && (
+                    <Button variant="outline" size="sm" onClick={openEdit} className="gap-1">
+                      <Pencil className="w-3.5 h-3.5" /> Edit
+                    </Button>
+                  )}
+                </div>
+                {isOwner && profile?.username && (
+                  <p className="text-sm text-muted-foreground mt-1">@{profile.username}</p>
+                )}
                 <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
@@ -330,6 +340,33 @@ const Channel = () => {
               )}
             </div>
           </div>
+
+          <Dialog open={editOpen} onOpenChange={setEditOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Profile</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-username">Username</Label>
+                  <Input id="edit-username" value={editUsername} onChange={(e) => setEditUsername(e.target.value)} placeholder="your_username" />
+                  <p className="text-xs text-muted-foreground">3-30 characters. Letters, numbers, underscores.</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-name">Channel Name</Label>
+                  <Input id="edit-name" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-desc">Channel Description</Label>
+                  <Textarea id="edit-desc" rows={4} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditOpen(false)} disabled={savingEdit}>Cancel</Button>
+                <Button onClick={handleSaveEdit} disabled={savingEdit}>{savingEdit ? "Saving..." : "Save"}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <Tabs defaultValue="videos" className="w-full mb-8">
             <TabsList className="w-full justify-start bg-secondary/50 border border-border mb-6 overflow-x-auto">
