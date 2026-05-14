@@ -1,17 +1,20 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { StarRating } from "@/components/StarRating";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Video, Calendar, Eye, Play, Camera, ImagePlus } from "lucide-react";
+import { Users, Video, Calendar, Play, Camera, ImagePlus, Pencil } from "lucide-react";
 
 const formatViews = (views: number) => {
   if (views >= 1e9) return `${(views / 1e9).toFixed(1)}B`;
@@ -28,6 +31,11 @@ const Channel = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
@@ -68,18 +76,87 @@ const Channel = () => {
     enabled: !!channel?.id,
   });
 
-  const handleSubscribe = () => {
+  // Check existing subscription
+  useEffect(() => {
+    if (!user || !channel?.id) { setIsSubscribed(false); return; }
+    supabase
+      .from("subscriptions")
+      .select("id")
+      .eq("subscriber_id", user.id)
+      .eq("channel_id", channel.id)
+      .maybeSingle()
+      .then(({ data }) => setIsSubscribed(!!data));
+  }, [user, channel?.id]);
+
+  // Load profile for username when viewing own channel
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("*").eq("user_id", user!.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const handleSubscribe = async () => {
     if (!user) {
       toast({ title: "Sign in required", variant: "destructive" });
       return;
     }
-    setIsSubscribed(!isSubscribed);
-    toast({
-      title: isSubscribed ? "Unsubscribed" : "Subscribed!",
-      description: isSubscribed
-        ? `You unsubscribed from ${channel?.name}`
-        : `You subscribed to ${channel?.name}`,
-    });
+    if (!channel) return;
+    if (isSubscribed) {
+      const { error } = await supabase.from("subscriptions").delete()
+        .eq("subscriber_id", user.id).eq("channel_id", channel.id);
+      if (error) { toast({ title: "Error", variant: "destructive" }); return; }
+      setIsSubscribed(false);
+      toast({ title: "Unsubscribed", description: `You unsubscribed from ${channel.name}` });
+    } else {
+      const { error } = await supabase.from("subscriptions").insert({ subscriber_id: user.id, channel_id: channel.id });
+      if (error) { toast({ title: "Error", variant: "destructive" }); return; }
+      setIsSubscribed(true);
+      toast({ title: "Subscribed!", description: `You subscribed to ${channel.name}` });
+    }
+    queryClient.invalidateQueries({ queryKey: ["channel"] });
+  };
+
+  const openEdit = () => {
+    if (!channel) return;
+    setEditName(channel.name || "");
+    setEditDescription(channel.description || "");
+    setEditUsername(profile?.username || "");
+    setEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!user || !channel) return;
+    const name = editName.trim();
+    const username = editUsername.trim();
+    if (!name) { toast({ title: "Name required", variant: "destructive" }); return; }
+    if (username && !/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+      toast({ title: "Invalid username", description: "3-30 letters, numbers, underscores.", variant: "destructive" });
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const { error: cErr } = await supabase.from("channels")
+        .update({ name, description: editDescription.trim() || null })
+        .eq("id", channel.id);
+      if (cErr) throw cErr;
+      if (username) {
+        const { error: pErr } = await supabase.from("profiles")
+          .update({ username, display_name: username })
+          .eq("user_id", user.id);
+        if (pErr) throw pErr;
+      }
+      toast({ title: "Profile updated!" });
+      setEditOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["channel"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    } catch (err: any) {
+      toast({ title: "Save failed", description: err.message || "Try again", variant: "destructive" });
+    } finally {
+      setSavingEdit(false);
+    }
   };
 
   const uploadImage = async (
