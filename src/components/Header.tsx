@@ -118,10 +118,15 @@ export const Header = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="classic-button">
-                      <User className="w-4 h-4" />
-                      <span className="ml-1.5 hidden sm:inline">
-                        {user.email?.split("@")[0]}
+                    <button className="classic-button !p-1 flex items-center gap-1.5">
+                      <Avatar className="h-6 w-6">
+                        {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+                        <AvatarFallback className="text-xs">
+                          {(username || user.email || "?").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden sm:inline pr-1.5">
+                        {username || user.email?.split("@")[0]}
                       </span>
                     </button>
                   </DropdownMenuTrigger>
