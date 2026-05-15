@@ -1,10 +1,12 @@
 import { Search, Upload, User, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthModal } from "@/components/AuthModal";
 import { UploadVideoModal } from "@/components/UploadVideoModal";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +23,25 @@ export const Header = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setAvatarUrl(null);
+      setUsername(null);
+      return;
+    }
+    supabase
+      .from("profiles")
+      .select("avatar_url, username, display_name")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setAvatarUrl(data?.avatar_url ?? null);
+        setUsername(data?.username ?? data?.display_name ?? null);
+      });
+  }, [user]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -97,10 +118,15 @@ export const Header = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="classic-button">
-                      <User className="w-4 h-4" />
-                      <span className="ml-1.5 hidden sm:inline">
-                        {user.email?.split("@")[0]}
+                    <button className="classic-button !p-1 flex items-center gap-1.5">
+                      <Avatar className="h-6 w-6">
+                        {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
+                        <AvatarFallback className="text-xs">
+                          {(username || user.email || "?").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden sm:inline pr-1.5">
+                        {username || user.email?.split("@")[0]}
                       </span>
                     </button>
                   </DropdownMenuTrigger>
