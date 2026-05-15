@@ -23,6 +23,25 @@ export const Header = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setAvatarUrl(null);
+      setUsername(null);
+      return;
+    }
+    supabase
+      .from("profiles")
+      .select("avatar_url, username, display_name")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setAvatarUrl(data?.avatar_url ?? null);
+        setUsername(data?.username ?? data?.display_name ?? null);
+      });
+  }, [user]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
